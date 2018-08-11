@@ -1,6 +1,9 @@
 import RPi.GPIO as GPIO, time
+from tkinter import *
 
 import sys
+
+root = Tk()
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -9,6 +12,10 @@ GPIO.setup(16, GPIO.OUT)
 GPIO.setup(18, GPIO.OUT)
 
 p = GPIO.PWM(16, 100)
+
+titleLabel = Label(root, text="Stepper Motor Controller", bg="green", fg="white")
+titleLabel.pack()
+
 
 def SpinMotor(dire):
     p.ChangeFrequency(100)
@@ -47,4 +54,4 @@ while True:
 
         break
 
-
+root.mainloop()
