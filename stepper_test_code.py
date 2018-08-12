@@ -9,11 +9,29 @@
 # Big Easy driver = 1/16 microstep mode
 # Turn a 200 step motor left one full revolution: 3200
 
+
+from Tkinter import *
 from time import sleep
 import RPi.GPIO as gpio  # https://pypi.python.org/pypi/RPi.GPIO
 
 
-# import exitHandler #uncomment this and line 58 if using exitHandler
+import exitHandler # uncomment this and line 58 if using exitHandler
+
+
+root = Tk()
+
+
+titleLabel = Label(root, text="Stepper Motor Controller", bg="green", fg="white")
+titleLabel.pack()
+
+
+enableMotor = Checkbutton(root, text="Enable Motor")
+forwardButton = Button(root, text="Forward")
+backwardButton = Button(root, text="Backward")
+
+enableMotor.grid(columnspan=2)
+forwardButton.grid(row=0, column=0)
+backwardButton.grid(row=0, column=1)
 
 
 class stepper:
@@ -22,9 +40,9 @@ class stepper:
     def __init__(self, pins):
         # setup pins
         self.pins = pins
-        self.stepPin = self.pins[0]
-        self.directionPin = self.pins[1]
-        self.enablePin = self.pins[2]
+        self.stepPin = self.pins[16]
+        self.directionPin = self.pins[18]
+        self.enablePin = self.pins[22]
 
         # use the broadcom layout for the gpio
         gpio.setmode(gpio.BCM)
@@ -37,8 +55,10 @@ class stepper:
         # set enable to high (i.e. power is NOT going to the motor)
         gpio.output(self.enablePin, True)
 
-        print(
-            "Stepper initialized (step=" + self.stepPin + ", direction=" + self.directionPin + ", enable=" + self.enablePin + ")")
+        print("Stepper initialized (step=" + self.stepPin + ", direction=" + self.directionPin + ", enable=" + self.enablePin + ")")
+        setupLabel = Label(root, text='Settings: Enable Pin = ' + self.enablePin + ' Dir Pin' + self.directionPin + 'Step Pin' + self.stepPin)
+        setupLabel.pack()
+
 
     # clears GPIO settings
     def cleanGPIO(self):
@@ -68,7 +88,7 @@ class stepper:
 
         while stepCounter < steps:
             # gracefully exit if ctr-c is pressed
-            # exitHandler.exitPoint(True) #exitHandler.exitPoint(True, cleanGPIO)
+            exitHandler.exitPoint(True) #exitHandler.exitPoint(True, cleanGPIO)
 
             # turning the gpio on and off tells the easy driver to take one step
             gpio.output(self.stepPin, True)
@@ -83,3 +103,5 @@ class stepper:
             gpio.output(self.enablePin, True)
 
         print("stepperDriver complete (turned " + dir + " " + str(steps) + " steps)")
+
+    root.mainloop()
