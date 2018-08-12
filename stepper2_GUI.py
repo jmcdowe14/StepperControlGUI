@@ -12,18 +12,43 @@ GPIO.setup(16, GPIO.OUT)
 
 GPIO.setup(18, GPIO.OUT)
 
+GPIO.setup(22, GPIO.OUT)
+
 p = GPIO.PWM(16, 100)
 
 titleLabel = Label(root, text="Stepper Motor Controller", bg="green", fg="white")
-titleLabel.pack()
+pinSetup = Label(root, text="Pin are Set as [Enable] = 22, [DIR] = 18. [STP] = 16")
+statusLabel = Label(root, text="Controller is set to: {}".format(MotorStatus))
 
 enableMotor = Checkbutton(root, text="Enable Motor")
 forwardButton = Button(root, text="Forward")
 backwardButton = Button(root, text="Backward")
+stopButton = Button(root, text="STOP")
+
+
+titleLabel.pack()
+pinSetup.pack()
+
+forwardButton.bind("<forwardButton>", SpinForward)
+forwardButton.grid(row=0, column=0)
+
+backwardButton.grid(row=0, column=1)
+backwardButton.bind("<backwardButton>", SpinBackward)
+
+stopButton.grid(row=0, column=3)
+stopButton.bind("<stopButton>", Shutdown)
+
 
 enableMotor.grid(columnspan=2)
-forwardButton.grid(row=0, column=0)
-backwardButton.grid(row=0, column=1)
+
+
+def ControlStatus():
+
+    if enableMotor == True:
+        MotorStatus = 'ON'
+
+    else:
+        MotorStatus = 'OFF'
 
 def SpinMotor(dire):
     p.ChangeFrequency(100)
@@ -36,30 +61,19 @@ def SpinMotor(dire):
 
     return True
 
-while True:
+def SpinForward(event):
 
-    dir_input = raw_input("Enter your dir: ")
+    SpinMotor(True)
 
-    if dir_input == "f":
+def SpinBackward(event):
 
-        SpinMotor(True)
+    SpinMotor(False)
 
-    elif dir_input == "b":
+def Shutdown(event):
 
-        SpinMotor(False)
+    p.stop()
 
-    elif dir_input == "s":
+    GPIO.cleanup()
 
-        p.stop()
-
-        dir_input = ""
-
-    elif dir_input == "shutdown":
-
-        p.stop()
-
-        GPIO.cleanup()
-
-        break
 
 root.mainloop()
