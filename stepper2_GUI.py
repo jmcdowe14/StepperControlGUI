@@ -41,8 +41,11 @@ stopButton.bind("<stopButton>", Shutdown)
 
 enableMotor.grid(columnspan=2)
 
+MotorStatus = 'text'
 
 def ControlStatus():
+
+    global MotorStatus
 
     if enableMotor == True:
         MotorStatus = 'ON'
@@ -63,9 +66,13 @@ def SpinMotor(dire):
 
 def SpinForward(event):
 
+    GPIO.out(22, 1)
+
     SpinMotor(True)
 
 def SpinBackward(event):
+
+    GPIO.out(22, 0)
 
     SpinMotor(False)
 
@@ -74,6 +81,9 @@ def Shutdown(event):
     p.stop()
 
     GPIO.cleanup()
+
+while True:
+
 
 
 root.mainloop()
