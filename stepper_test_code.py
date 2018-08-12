@@ -10,6 +10,7 @@ import RPi.GPIO as gpio  # https://pypi.python.org/pypi/RPi.GPIO
 
 # import exitHandler #uncomment this and line 58 if using exitHandler
 
+
 class stepper:
     # instantiate stepper
     # pins = [stepPin, directionPin, enablePin]
