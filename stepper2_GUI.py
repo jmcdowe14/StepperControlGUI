@@ -66,3 +66,5 @@ stopButton.bind("<ButtonPress-1>", shutdown)
 stopButton.pack()
 
 root.mainloop()
+
+GPIO.cleanup()
