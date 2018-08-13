@@ -1,10 +1,12 @@
-import RPi.GPIO as GPIO, time
+import RPi.GPIO as GPIO
 
-from Tkinter import *
+import time
 
-import sys
+from tkinter import *
 
 root = Tk()
+
+var1 = IntVar()
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -14,76 +16,53 @@ GPIO.setup(18, GPIO.OUT)
 
 GPIO.setup(22, GPIO.OUT)
 
+GPIO.output(22, 1)
+
 p = GPIO.PWM(16, 100)
 
-titleLabel = Label(root, text="Stepper Motor Controller", bg="green", fg="white")
-pinSetup = Label(root, text="Pin are Set as [Enable] = 22, [DIR] = 18. [STP] = 16")
-statusLabel = Label(root, text="Controller is set to: {}".format(MotorStatus))
-
-enableMotor = Checkbutton(root, text="Enable Motor")
-forwardButton = Button(root, text="Forward")
-backwardButton = Button(root, text="Backward")
-stopButton = Button(root, text="STOP")
-
-
-titleLabel.pack()
-pinSetup.pack()
-
-forwardButton.bind("<forwardButton>", SpinForward)
-forwardButton.grid(row=0, column=0)
-
-backwardButton.grid(row=0, column=1)
-backwardButton.bind("<backwardButton>", SpinBackward)
-
-stopButton.grid(row=0, column=3)
-stopButton.bind("<stopButton>", Shutdown)
-
-
-enableMotor.grid(columnspan=2)
-
-MotorStatus = 'text'
-
-def ControlStatus():
-
-    global MotorStatus
-
-    if enableMotor == True:
-        MotorStatus = 'ON'
-
-    else:
-        MotorStatus = 'OFF'
-
-def SpinMotor(dire):
+def spin_motor(dire):
     p.ChangeFrequency(100)
-
-    GPIO.out(18,dire)
-
+    GPIO.output(18, dire)
     p.start(1)
-
     time.sleep(0.01)
 
-    return True
+def spin_forward(event):
+    if var1.get() == 1:
+        GPIO.output(22, 0)
+        spin_motor(1)
+    else:
+        print('MOTOR NOT ENABLED!')
 
-def SpinForward(event):
+def spin_backward(event):
+    if var1.get() == 1:
+        GPIO.output(22, 0)
+        spin_motor(0)
+    else:
+        print('MOTOR NOT ENABLED!')
 
-    GPIO.out(22, 1)
+def shutdown(event):
+    if var1.get() == 1:
+        GPIO.output(22, 1)
+        p.stop()
+    else:
+        print('MOTOR NOT ENABLED!')
 
-    SpinMotor(True)
+chk = Checkbutton(root, text="Enable Motor", variable=var1)
+chk.pack()
 
-def SpinBackward(event):
+forwardButton = Button(root, text="Forward")
+forwardButton.bind("<ButtonPress-1>", spin_forward)
+forwardButton.bind("<ButtonRelease-1>", shutdown)
+forwardButton.pack()
 
-    GPIO.out(22, 0)
-
-    SpinMotor(False)
-
-def Shutdown(event):
-
-    p.stop()
-
-    GPIO.cleanup()
-
-while True:
+backwardButton = Button(root, text="Backward")
+backwardButton.bind("<ButtonPress-1>", spin_backward)
+backwardButton.bind("<ButtonRelease-1>", shutdown)
+backwardButton.pack()
 
 
+stopButton = Button(root, text="STOP")
+stopButton.bind("<ButtonPress-1>", shutdown)
+stopButton.pack()
 
 root.mainloop()
