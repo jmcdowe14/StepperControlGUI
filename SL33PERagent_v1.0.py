@@ -33,13 +33,13 @@ def spin_motor(dire):
 def relayswitch_on(event):
 
     if var2.get() ==1:
-        GPIO.ouput(32, 0)
+        GPIO.output(32, 0)
     else:
         print('Relay Control Not Active!')
 
 def relayswitch_off(event):
     if var2.get() == 1:
-        GPIO.ouput(32, 1)
+        GPIO.output(32, 1)
     else:
         print('Relay Control Not Active!')
 
@@ -67,7 +67,7 @@ def shutdown(event):
 chk1 = Checkbutton(root, text="Enable Motor", variable=var1)
 chk1.pack()
 
-chk2 = Checkbutton(root, text="Enable Motor", variable=var2)
+chk2 = Checkbutton(root, text="Enable Relay", variable=var2)
 chk2.pack()
 
 forwardButton = Button(root, text="Forward")
