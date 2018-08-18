@@ -2,25 +2,17 @@
 import pygame
 from tkinter import *
 
+pygame.mixer.init()
+sound1 = pygame.mixer.Sound('TEST1.mp3')
+
 root = Tk()
 
-var1 = IntVar()
-
-
 def play_audio(event):
-    if var1.get() == 1:
-        pygame.mixer.init()
-        pygame.mixer.music.load("TEST1.wav")
-        pygame.mixer.music.play()
-        while pygame.mixer.music.get_busy() == True:
-            continue
-    else:
+    sound1.play()
+    print('AUDIO IS PLAYING')
 
-        print('AUDIO IS OFF')
-
-
-audio_button = Button(root, text="Play Audio!", variable=var1)
-audio_button.bind("<ButtonPress-1>", play_audio)
-audio_button.pack()
+audioButton = Button(root, text="Play Audio!")
+audioButton.bind("<ButtonPress-1>", play_audio)
+audioButton.pack()
 
 root.mainloop()
