@@ -1,35 +1,26 @@
 
-import RPi.GPIO as GPIO
-
-
+import pygame
 from tkinter import *
-
 
 root = Tk()
 
 var1 = IntVar()
 
-GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(16, GPIO.OUT)
-
-
-def led_control():
-
+def play_audio(event):
     if var1.get() == 1:
-
-        print('LED IS ON')
-
-        GPIO.output(16, 1)
-
+        pygame.mixer.init()
+        pygame.mixer.music.load("TEST1.wav")
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy() == True:
+            continue
     else:
 
-        print('LED IS OFF')
+        print('AUDIO IS OFF')
 
-        GPIO.output(16, 0)
 
-chk = Checkbutton(root, text="Enable Motor", variable=var1, command=led_control)
-chk.pack()
-
+audio_button = Button(root, text="Play Audio!", variable=var1)
+audio_button.bind("<ButtonPress-1>", play_audio)
+audio_button.pack()
 
 root.mainloop()
